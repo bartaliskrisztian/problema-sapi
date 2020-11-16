@@ -40,14 +40,18 @@ function Report() {
 
     return (
         <div className="report-container">
-            <textarea 
-                className="text-input" 
-                value = {problemText}
-                placeholder="Írja le problémáját, kérdését" 
-                onChange={handleTextChange}
-            />
-            <ImageDropzone />
+            <div className="report-container__top">
+                <textarea 
+                    className="text-input" 
+                    value = {problemText}
+                    placeholder="Írja le problémáját, kérdését" 
+                    onChange={handleTextChange}
+                />
+                <ImageDropzone />
+            </div>
+            <div className="report-container__bottom">
 
+            </div>
         </div>
     );
 }

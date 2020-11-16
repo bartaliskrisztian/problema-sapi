@@ -14,131 +14,123 @@ function ImageDropzone() {
         borderRadius: 10,
         borderColor: "#eeeeee",
         borderStyle: "dashed",
-        'box-shadow': '2px 2px 7px #dbdbdb',
+        boxShadow: '2px 2px 7px #dbdbdb',
         backgroundColor: "#f5ecec",
         color: 'rgb(94, 90, 90)',
-        'font-size': 'large',
+        fontSize: 'large',
         outline: "none",
         transition: "border .24s ease-in-out",
         width: "100%",
         height: "100%"
-      };
-      
-      const activeStyle = {
+    };
+    
+    const activeStyle = {
         borderColor: "#2196f3"
-      };
-      
-      const acceptStyle = {
-        borderColor: "#00e676"
-      };
-      
-      const rejectStyle = {
+    };
+    
+    const acceptStyle = {
+        borderColor: "#666464"
+    };
+    
+    const rejectStyle = {
         borderColor: "#ff1744"
-      };
-      
-      const thumbsContainer = {
-        display: "flex",
-        flexDirection: "row",
-        flexWrap: "wrap",
-        marginTop: 16
-      };
-      
-      const thumb = {
-        display: "inline-flex",
-        borderRadius: 2,
-        border: "1px solid #eaeaea",
-        marginBottom: 8,
-        marginRight: 8,
-        width: "auto",
-        height: 200,
-        padding: 4,
-        boxSizing: "border-box"
-      };
-      
-      const thumbInner = {
-        display: "flex",
-        minWidth: 0,
-        overflow: "hidden"
-      };
-      
-      const img = {
-        display: "block",
-        width: "auto",
-        height: "100%"
-      };
-
+    };
+    
     const [files, setFiles] = useState([]);
-  const {
-    getRootProps,
-    getInputProps,
-    isDragActive,
-    isDragAccept,
-    isDragReject,
-    acceptedFiles,
-    open
-  } = useDropzone({
-    accept: "image/*",
-    noClick: true,
-    noKeyboard: true,
-    onDrop: acceptedFiles => {
-      setFiles(
-        acceptedFiles.map(file =>
-          Object.assign(file, {
-            preview: URL.createObjectURL(file)
-          })
-        )
-      );
+    const [errors, setErrors] = useState("");
+
+    const {
+        getRootProps,
+        getInputProps,
+        isDragActive,
+        isDragAccept,
+        isDragReject,
+        acceptedFiles,
+        open
+    } = useDropzone({
+        accept: "image/*",
+        maxFiles: 5,
+        maxSize: 5242880,
+        noClick: true,
+        noKeyboard: true,
+        onDrop: (acceptedFiles, fileRejections) => {
+            setErrors("");
+            setFiles([...files, 
+                    ...acceptedFiles.map(file =>
+                    Object.assign(file, {preview: URL.createObjectURL(file)}))]);
+            fileRejections.forEach( (file) => {
+                file.errors.forEach((err) => {
+                    if (err.code === "file-too-large") {
+                        setErrors(`Error: ${err.message}`);
+                    }
+                    if (err.code === "file-invalid-type") {
+                        setErrors(`Error: ${err.message}`);
+                    }
+                });
+            });
+        }
+    });
+
+    const removeImages = () => {
+        console.log(files);
+        setFiles([]);
+        console.log(files);
     }
-  });
 
-  const style = useMemo(
-    () => ({
-      ...baseStyle,
-      ...(isDragActive ? activeStyle : {}),
-      ...(isDragAccept ? acceptStyle : {}),
-      ...(isDragReject ? rejectStyle : {})
-    }),
-    [isDragActive, isDragReject]
-  );
-
+    const style = useMemo(
+        () => ({
+        ...baseStyle,
+        ...(isDragActive ? activeStyle : {}),
+        ...(isDragAccept ? acceptStyle : {}),
+        ...(isDragReject ? rejectStyle : {})
+        }),
+        // eslint-disable-next-line
+        [isDragActive, isDragReject]
+    );
 
     const thumbs = files.map(file => (
-        <div style={thumb} key={file.name}>
-          <div style={thumbInner}>
-            <img src={file.preview} style={img} />
-          </div>
+        <div className="thumb-image__holder" key={file.name}>
+            <img className="thumb-image" src={file.preview} alt={file.name} />
+            <div>{file.path} - {file.size} bytes</div>
         </div>
-      ));
-    
-      useEffect(
-        () => () => {
-          // Make sure to revoke the data uris to avoid memory leaks
-          files.forEach(file => URL.revokeObjectURL(file.preview));
-          console.log(files);
-        },
-        [files]
-      );
-    
-      const filepath = acceptedFiles.map(file => (
-        <li key={file.path}>
-          {file.path} - {file.size} bytes
-        </li>
-      ));
+    ));
 
+    useEffect(
+    () => () => {
+        // Make sure to revoke the data uris to avoid memory leaks
+        files.forEach(file => URL.revokeObjectURL(file.preview));
+    },
+    [files]
+    );
+
+    
+    
     return (
         <div className="dropzone-container">
         <div {...getRootProps({ style })}>
             <input {...getInputProps()} />
-            <p>Drag 'n' drop some files here</p>
-            <button type="button" onClick={open}>
-            Open File Dialog
-            </button>
+            {!files.length ?
+            (<div className="drop-title">
+                Húzza ide az állományokat
+                <div className="drop-arrow">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>) :
+            (<div className="images">
+                {thumbs}
+            </div>)}
+            <div className="upload-buttons">
+                <div className="image-errors">{errors}</div>
+                <button className="upload-image__button" type="button" onClick={open}>
+                    Kép kiválasztása
+                </button>
+                <button className="clear-images__button" type="button" onClick={removeImages}>
+                    Képek eltávolítása
+                </button>
+            </div>
         </div>
-        {/* <div>
-            <h4>Files</h4>
-            <ul>{filepath}</ul>
-        </div>
-         <div style={thumbsContainer}>{thumbs}</div>  */}
     </div>
     );
 }
