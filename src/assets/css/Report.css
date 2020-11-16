@@ -1,0 +1,23 @@
+.report-container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+}
+
+.text-input {
+  resize: none;
+  width: 30%;
+  height: 50%;
+  border-radius: 10px;
+  font-size: large;
+  text-align: start;
+  padding: 10px;
+  background: #f5ecec;
+  color: rgb(94, 90, 90);
+  box-shadow: 2px 2px 7px #dbdbdb;
+}
+
+.text-input:focus {
+  outline: none;
+}
