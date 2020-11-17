@@ -9,35 +9,31 @@ function Report() {
 
     const [files, setFiles] = useState([]);
     const [problemText, setProblemText] = useState("");
+    const [captchaError, setCaptchaError] = useState("");
+    const [error, setError] = useState("");
 
     const handleTextChange = (e) => {
         setProblemText(e.target.value);
     }
-
-    const onCaptchaChange = (value) => {
-        console.log("Captcha value:", value);
+    const onCaptchaChange = (token) => {
+        if(token !== "" && token !== null) {
+            setCaptchaError("");
+        }
     }
 
     const onSubmitWithReCAPTCHA = async () => {
-        const token = await recaptchaRef.current.executeAsync();
-     
-        // apply to form data
+        console.log(files);
+        setError("");
+        const token = await recaptchaRef.current.props.grecaptcha.getResponse();
+        if(token === "" || token === null) {
+            let e = document.getElementsByClassName("rc-anchor-error-msg");
+            setCaptchaError("Igazolja, hogy Ön nem robot.")
+        }
+        if(problemText.length < 20) {
+            setError("Túl rövid a megfogalmazott szöveg.")
+        }
     }
-    /*
     
-
-    const handleFileChange = (e) => {
-        setFiles([...files, ...e.target.files]);
-    }
-   
-    console.log(files);
-    <ReCAPTCHA 
-                ref = {recaptchaRef}
-                sitekey = "6LeDkuMZAAAAABPwjt5qtMOC37LxIY-rZZXb_CI4"
-                onChange = {onCaptchaChange}
-            />
-    */
-
     return (
         <div className="report-container">
             <div className="report-container__top">
@@ -47,10 +43,21 @@ function Report() {
                     placeholder="Írja le problémáját, kérdését" 
                     onChange={handleTextChange}
                 />
-                <ImageDropzone />
+                <ImageDropzone setUploadedImages={setFiles} files={files}/>
             </div>
             <div className="report-container__bottom">
-
+                <div className="error-message">{error}</div>
+                <div className="recaptcha-container">
+                <ReCAPTCHA 
+                    className="recaptcha"
+                    ref = {recaptchaRef}
+                    sitekey = {process.env.REACT_APP_RECAPTCHA_SITE_KEY}
+                    onChange = {onCaptchaChange}
+                    onErrored={(error) => console.log(error)}
+                />
+                <div className="recaptcha__error-message">{captchaError}</div>
+                </div>
+                <button className="submit-button" type="submit" onClick={onSubmitWithReCAPTCHA}>Küldés</button>
             </div>
         </div>
     );

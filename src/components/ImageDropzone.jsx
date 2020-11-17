@@ -2,7 +2,7 @@ import React, {useMemo, useEffect, useState} from 'react';
 import { useDropzone } from "react-dropzone";
 import "../assets/css/ImageDropzone.css";
 
-function ImageDropzone() {
+function ImageDropzone(prop) {
 
     const baseStyle = {
         flex: 1,
@@ -36,7 +36,7 @@ function ImageDropzone() {
         borderColor: "#ff1744"
     };
     
-    const [files, setFiles] = useState([]);
+    //const [files, setFiles] = useState([]);
     const [errors, setErrors] = useState("");
 
     const {
@@ -49,22 +49,22 @@ function ImageDropzone() {
         open
     } = useDropzone({
         accept: "image/*",
-        maxFiles: 5,
-        maxSize: 5242880,
+        maxFiles: 3,
+        maxSize: 500000,
         noClick: true,
         noKeyboard: true,
         onDrop: (acceptedFiles, fileRejections) => {
             setErrors("");
-            setFiles([...files, 
+            prop.setUploadedImages([...prop.files, 
                     ...acceptedFiles.map(file =>
                     Object.assign(file, {preview: URL.createObjectURL(file)}))]);
             fileRejections.forEach( (file) => {
                 file.errors.forEach((err) => {
                     if (err.code === "file-too-large") {
-                        setErrors(`Error: ${err.message}`);
+                        setErrors(`${file.file.name} túl nagy méretű`);
                     }
                     if (err.code === "file-invalid-type") {
-                        setErrors(`Error: ${err.message}`);
+                        setErrors(`${file.file.name} érvénytelen fájlformátum`);
                     }
                 });
             });
@@ -72,9 +72,7 @@ function ImageDropzone() {
     });
 
     const removeImages = () => {
-        console.log(files);
-        setFiles([]);
-        console.log(files);
+        prop.setUploadedImages([]);
     }
 
     const style = useMemo(
@@ -88,8 +86,8 @@ function ImageDropzone() {
         [isDragActive, isDragReject]
     );
 
-    const thumbs = files.map(file => (
-        <div className="thumb-image__holder" key={file.name}>
+    const thumbs = prop.files.map((file, i) => (
+        <div className="thumb-image__holder" key={i}>
             <img className="thumb-image" src={file.preview} alt={file.name} />
             <div>{file.path} - {file.size} bytes</div>
         </div>
@@ -98,9 +96,9 @@ function ImageDropzone() {
     useEffect(
     () => () => {
         // Make sure to revoke the data uris to avoid memory leaks
-        files.forEach(file => URL.revokeObjectURL(file.preview));
+        prop.files.forEach(file => URL.revokeObjectURL(file.preview));
     },
-    [files]
+    [prop.files]
     );
 
     
@@ -109,9 +107,9 @@ function ImageDropzone() {
         <div className="dropzone-container">
         <div {...getRootProps({ style })}>
             <input {...getInputProps()} />
-            {!files.length ?
+            {!prop.files.length ?
             (<div className="drop-title">
-                Húzza ide az állományokat
+                Húzza ide az állományokat (max. 3 db., egy kép max. 5 MB)
                 <div className="drop-arrow">
                     <span></span>
                     <span></span>
