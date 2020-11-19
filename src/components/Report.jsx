@@ -9,14 +9,14 @@ function Report() {
 
     const recaptchaRef = React.useRef();
 
-    const [files, setFiles] = useState([]);
-    const [problemText, setProblemText] = useState("");
-    const [captchaError, setCaptchaError] = useState("");
+    const [files, setFiles] = useState([]); // for storing image(s) uploaded by user
+    const [reportText, setReportText] = useState(""); // text reported by user
+    const [captchaError, setCaptchaError] = useState(""); 
     const [error, setError] = useState("");
     const [isUploading, setIsUploading] = useState(false);
 
     const handleTextChange = (e) => {
-        setProblemText(e.target.value);
+        setReportText(e.target.value);
     }
 
     const onCaptchaChange = (token) => {
@@ -25,13 +25,17 @@ function Report() {
         }
     }
 
+    // resets state values and reCaptcha
     const resetPage = () => {
-        setProblemText("");
+        setReportText("");
         setFiles([]);
         setCaptchaError("");
         recaptchaRef.current.props.grecaptcha.reset();
     }
 
+    // uploads image to firebase storage
+    // on success return the image's download URL
+    // on error throws error
     const uploadFromBlobAsync = async ({blobUrl, name}) => {
         if (!blobUrl || !name) return null;
         try {
@@ -43,18 +47,21 @@ function Report() {
         }
     }
 
+    // uploads the reported text to firestore
+    // if it's provided, uploads the given image's download URL, otherwise null
     const uploadReport = async (url) => {
         const id = `${Date.now()}`;
         db.collection("reports").doc(`${id}`).get().then((docRef) => {
             if(docRef.data() === undefined) {
                 db.collection("reports").doc(`${id}`).set({
-                    text: problemText,
+                    text: reportText,
                     imageDownloadURL: url
                 });
             }
         });
     }
 
+    // if the user provided an image, upload it to firebase storage, then upload the report
     const uploadToFirebase = () => {
         if(files.length) {
             try {
@@ -76,24 +83,29 @@ function Report() {
         uploadReport(null);
     }
 
+
+    // when the user presses the submit button
     const onSubmitWithReCAPTCHA = async () => {
         setError("");
         const token = await recaptchaRef.current.props.grecaptcha.getResponse();
+        // if the reCaptcha's token is empty string or null, means that the user did not solve the captcha
         if(token === "" || token === null) {
             setCaptchaError("Igazolja, hogy Ön nem robot.")
             return;
         }
-        if(problemText.length < 20) {
-            setError("Túl rövid a megfogalmazott szöveg.")
+        // if the given text for report is too short
+        if(reportText.length < 20) {
+            setError("Túl rövid a megfogalmazott szöveg (min. 20 karakter).")
             return;
         }
 
-        setIsUploading(true);
-        uploadToFirebase();
+        setIsUploading(true); // setting up loader
+        uploadToFirebase(); // try to upload the image and report
         setIsUploading(false);
 
+        // providing success message for 2 secs
         setError("Sikeres feltöltés");
-        setTimeout(() => {setError("")}, 3000);
+        setTimeout(() => {setError("")}, 2000);
         
         resetPage();
     }
@@ -103,26 +115,29 @@ function Report() {
             <div className="report-container__top">
                 <textarea 
                     className="text-input" 
-                    value = {problemText}
+                    value = {reportText}
                     placeholder="Írja le problémáját, kérdését" 
                     onChange={handleTextChange}
                 />
                 <ImageDropzone setUploadedImages={setFiles} files={files} />
             </div>
             <div className="report-container__bottom">
-                <div className="error-message">{error}</div>
-                <div className="recaptcha-container">
-                <ReCAPTCHA 
-                    className="recaptcha"
-                    ref = {recaptchaRef}
-                    sitekey = {process.env.REACT_APP_RECAPTCHA_SITE_KEY}
-                    onChange = {onCaptchaChange}
-                    onErrored={(error) => console.log(error)}
-                />
-                <div className="recaptcha__error-message">{captchaError}</div>
+               
+                <div className="bottom-submit__container">
+                    <div className="error-message">{error}</div>
+                    <div className="recaptcha-container">
+                    <ReCAPTCHA 
+                        className="recaptcha"
+                        ref = {recaptchaRef}
+                        sitekey = {process.env.REACT_APP_RECAPTCHA_SITE_KEY}
+                        onChange = {onCaptchaChange}
+                        onErrored={(error) => console.log(error)}
+                    />
+                    <div className="recaptcha__error-message">{captchaError}</div>
+                    </div>
+                    <button className="submit-button" type="submit" onClick={onSubmitWithReCAPTCHA}>Küldés</button>
+                    {isUploading && (<div className="loader"></div>)}
                 </div>
-                <button className="submit-button" type="submit" onClick={onSubmitWithReCAPTCHA}>Küldés</button>
-                {isUploading && (<div className="loader"></div>)}
             </div>
         </div>
     );

@@ -4,6 +4,7 @@ import "../assets/css/ImageDropzone.css";
 
 function ImageDropzone(prop) {
 
+    // style attributes for dropzone container
     const baseStyle = {
         flex: 1,
         display: "flex",
@@ -36,9 +37,10 @@ function ImageDropzone(prop) {
         borderColor: "#ff1744"
     };
     
-    //const [files, setFiles] = useState([]);
-    const [errors, setErrors] = useState("");
+    const [errors, setErrors] = useState(""); // variable to store error messages
 
+
+    // get properties for dropzone
     const {
         getRootProps,
         getInputProps,
@@ -53,15 +55,20 @@ function ImageDropzone(prop) {
         maxSize: 500000,
         noClick: true,
         noKeyboard: true,
+        // when the user drops an image on the dropzone
         onDrop: (acceptedFiles, fileRejections) => {
             setErrors("");
+            // set the parent component's state with the given image(s)
             prop.setUploadedImages(acceptedFiles.map(file =>
                     Object.assign(file, {preview: URL.createObjectURL(file)})));
+            // on error
             fileRejections.forEach( (file) => {
                 file.errors.forEach((err) => {
+                    // when the file is too large
                     if (err.code === "file-too-large") {
                         setErrors(`${file.file.name} túl nagy méretű`);
                     }
+                    // when the file's type is not acccepted
                     if (err.code === "file-invalid-type") {
                         setErrors(`${file.file.name} érvénytelen fájlformátum`);
                     }
@@ -70,11 +77,14 @@ function ImageDropzone(prop) {
         }
     });
 
+
+    // removes all images from the dropzone and from the state
     const removeImages = () => {
         setErrors("");
         prop.setUploadedImages([]);
     }
 
+    // setting style depending on the user's interaction
     const style = useMemo(
         () => ({
         ...baseStyle,

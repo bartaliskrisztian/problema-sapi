@@ -1,16 +1,16 @@
 import firebase from 'firebase';
 import 'firebase/firestore';
 
-
+// firebase configuration details
 const firebaseConfig = {
-    apiKey: "AIzaSyCIKhCbyfGe4g9cCVB-aiT3wf8JHnOy8aw",
-    authDomain: "problema-sapi-59951.firebaseapp.com",
-    databaseURL: "https://problema-sapi-59951.firebaseio.com",
-    projectId: "problema-sapi-59951",
-    storageBucket: "problema-sapi-59951.appspot.com",
-    messagingSenderId: "92971631056",
-    appId: "1:92971631056:web:fc0fedb8e47fd9372db9d5",
-    measurementId: "G-6YSGCVK821"
+    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+    authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+    databaseURL: process.env.REACT_APP_DATABASE_URL,
+    projectId: process.env.REACT_APP_PROJECT_ID,
+    storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+    messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+    appId: process.env.REACT_APP_APP_ID,
+    measurementId: process.env.REACT_APP_MEASUREMENT_ID
   };
   
   firebase.initializeApp(firebaseConfig);
