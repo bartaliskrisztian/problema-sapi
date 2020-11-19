@@ -56,8 +56,8 @@
 }
 
 .thumb-image__holder {
-  width: 30%;
-  height: 30%;
+  width: 100px;
+  height: 100px;
   display: flex;
   flex-direction: column;
 }

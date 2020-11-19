@@ -49,15 +49,14 @@ function ImageDropzone(prop) {
         open
     } = useDropzone({
         accept: "image/*",
-        maxFiles: 3,
+        maxFiles: 1,
         maxSize: 500000,
         noClick: true,
         noKeyboard: true,
         onDrop: (acceptedFiles, fileRejections) => {
             setErrors("");
-            prop.setUploadedImages([...prop.files, 
-                    ...acceptedFiles.map(file =>
-                    Object.assign(file, {preview: URL.createObjectURL(file)}))]);
+            prop.setUploadedImages(acceptedFiles.map(file =>
+                    Object.assign(file, {preview: URL.createObjectURL(file)})));
             fileRejections.forEach( (file) => {
                 file.errors.forEach((err) => {
                     if (err.code === "file-too-large") {
@@ -72,6 +71,7 @@ function ImageDropzone(prop) {
     });
 
     const removeImages = () => {
+        setErrors("");
         prop.setUploadedImages([]);
     }
 
@@ -93,6 +93,7 @@ function ImageDropzone(prop) {
         </div>
     ));
 
+    
     useEffect(
     () => () => {
         // Make sure to revoke the data uris to avoid memory leaks
@@ -100,16 +101,15 @@ function ImageDropzone(prop) {
     },
     [prop.files]
     );
+    
 
-    
-    
     return (
         <div className="dropzone-container">
         <div {...getRootProps({ style })}>
-            <input {...getInputProps()} />
+            <input {...getInputProps() } />
             {!prop.files.length ?
             (<div className="drop-title">
-                Húzza ide az állományokat (max. 3 db., egy kép max. 5 MB)
+                Húzza ide az állományt (max. egy db., max. 5 MB)
                 <div className="drop-arrow">
                     <span></span>
                     <span></span>
@@ -125,7 +125,7 @@ function ImageDropzone(prop) {
                     Kép kiválasztása
                 </button>
                 <button className="clear-images__button" type="button" onClick={removeImages}>
-                    Képek eltávolítása
+                    Kép eltávolítása
                 </button>
             </div>
         </div>
