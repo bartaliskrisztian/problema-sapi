@@ -83,11 +83,9 @@
 .error-message {
   color: red;
   font-size: large;
-}
-
-.recaptcha__error-message {
-  color: red;
-  padding: 10px 0;
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 10px;
 }
 
 .recaptcha-container {
@@ -118,5 +116,32 @@
   }
   100% {
     transform: rotate(360deg);
+  }
+}
+
+.small-screen {
+  visibility: hidden;
+  color: #fff;
+  font-size: large;
+  width: auto;
+  text-align: center;
+}
+
+@media screen and (max-width: 600px) {
+  .small-screen {
+    visibility: visible;
+  }
+  .report-container {
+    visibility: hidden;
+  }
+}
+
+@media screen and (max-height: 600px) {
+  .small-screen {
+    visibility: visible;
+    padding: 30px;
+  }
+  .report-container {
+    visibility: hidden;
   }
 }

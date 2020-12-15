@@ -21,7 +21,7 @@ function Report() {
 
     const onCaptchaChange = (token) => {
         if(token !== "" && token !== null) {
-            setCaptchaError("");
+            setError("");
         }
     }
 
@@ -29,7 +29,7 @@ function Report() {
     const resetPage = () => {
         setReportText("");
         setFiles([]);
-        setCaptchaError("");
+        setError("");
         recaptchaRef.current.props.grecaptcha.reset();
     }
 
@@ -90,7 +90,7 @@ function Report() {
         const token = await recaptchaRef.current.props.grecaptcha.getResponse();
         // if the reCaptcha's token is empty string or null, means that the user did not solve the captcha
         if(token === "" || token === null) {
-            setCaptchaError("Igazolja, hogy Ön nem robot.")
+            setError("Igazolja, hogy Ön nem robot.")
             return;
         }
         // if the given text for report is too short
@@ -124,7 +124,7 @@ function Report() {
             <div className="report-container__bottom">
                
                 <div className="bottom-submit__container">
-                    <div className="error-message">{error}</div>
+                    {error && <div className="error-message">{error}</div>}
                     <div className="recaptcha-container">
                     <ReCAPTCHA 
                         className="recaptcha"
@@ -133,7 +133,6 @@ function Report() {
                         onChange = {onCaptchaChange}
                         onErrored={(error) => console.log(error)}
                     />
-                    <div className="recaptcha__error-message">{captchaError}</div>
                     </div>
                     <button className="submit-button" type="submit" onClick={onSubmitWithReCAPTCHA}>Küldés</button>
                     {isUploading && (<div className="loader"></div>)}
