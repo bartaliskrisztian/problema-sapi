@@ -131,7 +131,7 @@ function Report() {
                         ref = {recaptchaRef}
                         sitekey = {process.env.REACT_APP_RECAPTCHA_SITE_KEY}
                         onChange = {onCaptchaChange}
-                        onErrored={(error) => console.log(error)}
+                        //onErrored={(error) => console.log(error)}
                     />
                     </div>
                     <button className="submit-button" type="submit" onClick={onSubmitWithReCAPTCHA}>Küldés</button>
