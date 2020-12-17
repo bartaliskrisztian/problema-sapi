@@ -13,6 +13,7 @@ function Report() {
     const [reportText, setReportText] = useState(""); // text reported by user
     const [error, setError] = useState("");
     const [isUploading, setIsUploading] = useState(false);
+    const sourceCode = 'https://github.com/bartaliskrisztian/problema-sapi';
 
     const handleTextChange = (e) => {
         setReportText(e.target.value);
@@ -28,7 +29,6 @@ function Report() {
     const resetPage = () => {
         setReportText("");
         setFiles([]);
-        setError("");
         recaptchaRef.current.props.grecaptcha.reset();
     }
 
@@ -88,23 +88,23 @@ function Report() {
         setError("");
         const token = await recaptchaRef.current.props.grecaptcha.getResponse();
         // if the reCaptcha's token is empty string or null, means that the user did not solve the captcha
+        
         if(token === "" || token === null) {
             setError("Igazolja, hogy Ön nem robot.")
             return;
         }
+
         // if the given text for report is too short
         if(reportText.length < 20) {
             setError("Túl rövid a megfogalmazott szöveg (min. 20 karakter).")
             return;
         }
-
         setIsUploading(true); // setting up loader
         uploadToFirebase(); // try to upload the image and report
         setIsUploading(false);
 
         // providing success message for 2 secs
         setError("Sikeres feltöltés");
-        setTimeout(() => {setError("")}, 2000);
         
         resetPage();
     }
@@ -115,13 +115,19 @@ function Report() {
                 <textarea 
                     className="text-input" 
                     value = {reportText}
-                    placeholder="Írja le problémáját, kérdését" 
+                    placeholder="Írja le problémáját, észrevételét" 
                     onChange={handleTextChange}
                 />
                 <ImageDropzone setUploadedImages={setFiles} files={files} />
             </div>
             <div className="report-container__bottom">
-               
+                <div className="info">
+                    <div className="info-text">
+                        Névtelenül bejelentheti bármilyen problémáját az egyetemmel kapcsolatosan, 
+                        melyhez egy képet is csatolhat.
+                    </div>
+                    <div>{`Forráskód: `}<a href={`${sourceCode}`} className="source-code__link">{sourceCode}</a></div>
+                </div>
                 <div className="bottom-submit__container">
                     {error && <div className="error-message">{error}</div>}
                     <div className="recaptcha-container">
@@ -130,11 +136,12 @@ function Report() {
                         ref = {recaptchaRef}
                         sitekey = {process.env.REACT_APP_RECAPTCHA_SITE_KEY}
                         onChange = {onCaptchaChange}
-                        //onErrored={(error) => console.log(error)}
                     />
                     </div>
-                    <button className="submit-button" type="submit" onClick={onSubmitWithReCAPTCHA}>Küldés</button>
-                    {isUploading && (<div className="loader"></div>)}
+                    <div className="submit-container">
+                        <button className="submit-button" type="submit" onClick={onSubmitWithReCAPTCHA}>Küldés</button>
+                        {isUploading && (<div className="loader"></div>)}
+                    </div>
                 </div>
             </div>
         </div>

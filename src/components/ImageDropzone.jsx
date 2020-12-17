@@ -10,7 +10,6 @@ function ImageDropzone(prop) {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        padding: "10px",
         borderWidth: 2,
         borderRadius: 10,
         borderColor: "#eeeeee",
