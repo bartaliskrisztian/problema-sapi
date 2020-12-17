@@ -11,7 +11,6 @@ function Report() {
 
     const [files, setFiles] = useState([]); // for storing image(s) uploaded by user
     const [reportText, setReportText] = useState(""); // text reported by user
-    const [captchaError, setCaptchaError] = useState(""); 
     const [error, setError] = useState("");
     const [isUploading, setIsUploading] = useState(false);
 
