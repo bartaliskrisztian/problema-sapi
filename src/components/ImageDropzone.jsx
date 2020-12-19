@@ -7,7 +7,7 @@ function ImageDropzone(prop) {
 
     const compress = new Compress(
         {
-            targetSize: 0.2
+            targetSize: 5
         }
     );
     // style attributes for dropzone container
@@ -58,7 +58,6 @@ function ImageDropzone(prop) {
     } = useDropzone({
         accept: "image/*",
         maxFiles: 1,
-        maxSize: 2000000,
         noClick: true,
         noKeyboard: true,
         // when the user drops an image on the dropzone

@@ -1,5 +1,5 @@
-# University project for special exams
+# University project for final exam
 
 ## Goal
 
-To help students report their problems/comments anonymously via text and image too.
+To help SAPIENTIA UNIVERSITY students report their problems/comments anonymously via text and image too.
