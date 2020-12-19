@@ -5,11 +5,13 @@ import "../assets/css/ImageDropzone.css";
 
 function ImageDropzone(prop) {
 
+    // options for reducing file size
     const compress = new Compress(
         {
             targetSize: 5
         }
     );
+
     // style attributes for dropzone container
     const baseStyle = {
         flex: 1,
@@ -53,6 +55,7 @@ function ImageDropzone(prop) {
         isDragActive,
         isDragAccept,
         isDragReject,
+        // eslint-disable-next-line
         acceptedFiles,
         open
     } = useDropzone({
@@ -62,10 +65,12 @@ function ImageDropzone(prop) {
         noKeyboard: true,
         // when the user drops an image on the dropzone
         onDrop: (acceptedFiles, fileRejections) => {
-            setErrors("");
-    
-            compress.compress(acceptedFiles).then((images) => {
+            
+            // if the are accepted files, we compress their size if required
+            acceptedFiles.length && compress.compress(acceptedFiles).then((images) => {
+                    // eslint-disable-next-line
                     const { photo, info } = images[0];
+                    // creating new file from the compressed one
                     const file = new File([photo.data], photo.name, 
                         {
                           lastModified: new Date(),
@@ -73,6 +78,7 @@ function ImageDropzone(prop) {
                           path: photo.name
                         }
                     );
+                    setErrors("");
                     prop.setUploadedImages([Object.assign(file, {preview: URL.createObjectURL(file)})]);
             });
 
@@ -86,6 +92,10 @@ function ImageDropzone(prop) {
                     // when the file's type is not acccepted
                     if (err.code === "file-invalid-type") {
                         setErrors(`${file.file.name} érvénytelen fájlformátum`);
+                    }
+                    // when he user drops chooses more than one image
+                    if(err.code === "too-many-files") {
+                        setErrors("Csak egy képet csatolhat.")
                     }
                 });
             });
@@ -114,7 +124,7 @@ function ImageDropzone(prop) {
     const thumbs = prop.files.map((file, i) => (
         <div className="thumb-image__holder" key={i}>
             <img className="thumb-image" src={file.preview} alt={file.name} />
-            <div>{file.path} - {file.size} bytes</div>
+            {/* <div>{file.path} - {file.size} bytes</div> */}
         </div>
     ));
 
@@ -130,30 +140,30 @@ function ImageDropzone(prop) {
 
     return (
         <div className="dropzone-container">
-        <div {...getRootProps({ style })}>
-            <input {...getInputProps() } />
-            {!prop.files.length ?
-            (<div className="drop-title">
-                Húzza ide az állományt (max. egy db., max. 5 MB)
-                <div className="drop-arrow">
-                    <span></span>
-                    <span></span>
-                    <span></span>
+            <div className="dropzone-container__content" {...getRootProps({ style })}>
+                <input {...getInputProps() } />
+                {!prop.files.length ?
+                (<div className="drop-title">
+                    Húzza ide az állományt
+                    <div className="drop-arrow">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>) :
+                (<div className="images">
+                    {thumbs}
+                </div>)}
+                <div className="upload-buttons">
+                    <div className="image-errors">{errors}</div>
+                    <button className="upload-image__button" type="button" onClick={open}>
+                        Kép kiválasztása
+                    </button>
+                    <button className="clear-images__button" type="button" onClick={removeImages}>
+                        Kép eltávolítása
+                    </button>
                 </div>
-            </div>) :
-            (<div className="images">
-                {thumbs}
-            </div>)}
-            <div className="upload-buttons">
-                <div className="image-errors">{errors}</div>
-                <button className="upload-image__button" type="button" onClick={open}>
-                    Kép kiválasztása
-                </button>
-                <button className="clear-images__button" type="button" onClick={removeImages}>
-                    Kép eltávolítása
-                </button>
             </div>
-        </div>
     </div>
     );
 }

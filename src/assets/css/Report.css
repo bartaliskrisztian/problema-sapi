@@ -20,7 +20,6 @@
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  overflow: hidden;
 }
 
 .info-text {
@@ -98,6 +97,7 @@
   background-color: #fff;
   border-radius: 10px;
   padding: 10px;
+  margin: 5px;
 }
 
 .recaptcha {
@@ -124,17 +124,7 @@
   }
 }
 
-.small-screen {
-  visibility: hidden;
-  height: 0;
-  width: 0;
-  color: #fff;
-  font-size: large;
-  width: auto;
-  text-align: center;
-}
-
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 768px) {
   .report-container__content {
     flex-direction: column;
   }
@@ -142,18 +132,25 @@
   .report-text,
   .report-image {
     width: 90%;
-    height: fit-content;
+    margin: 10px 0;
+    height: max-content;
   }
+
   .drop-title {
     visibility: hidden;
   }
 
   .text-input {
+    height: 150px;
+  }
+
+  .text-input,
+  .dropzone-container {
     width: calc(100% - 20px);
   }
 
-  .dropzone-container {
-    width: calc(100% - 20px);
+  .info {
+    padding: 0;
   }
 
   .info-text {
@@ -163,7 +160,4 @@
   .submit-container {
     flex-direction: column;
   }
-}
-
-@media screen and (max-height: 600px) {
 }
