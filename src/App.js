@@ -6,7 +6,6 @@ function App() {
 
   return (
     <div className="App">
-      <div className="small-screen">Túl kicsi az eszköz mérete</div>
       <Report />
     </div>
   );

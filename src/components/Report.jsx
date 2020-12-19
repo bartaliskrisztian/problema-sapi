@@ -59,7 +59,7 @@ function Report() {
             }
         });
     }
-
+    console.log(files);
     // if the user provided an image, upload it to firebase storage, then upload the report
     const uploadToFirebase = () => {
         if(files.length) {
@@ -111,38 +111,44 @@ function Report() {
 
     return (
         <div className="report-container">
-            <div className="report-container__top">
-                <textarea 
-                    className="text-input" 
-                    value = {reportText}
-                    placeholder="Írja le problémáját, észrevételét" 
-                    onChange={handleTextChange}
-                />
-                <ImageDropzone setUploadedImages={setFiles} files={files} />
-            </div>
-            <div className="report-container__bottom">
-                <div className="info">
-                    <div className="info-text">
-                        Névtelenül bejelentheti bármilyen problémáját az egyetemmel kapcsolatosan, 
-                        melyhez egy képet is csatolhat.
+            <div className="report-container__content">
+                <div className="report-text">
+                    <div className="info">
+                        <div className="info-text">
+                            NÉVTELENÜL BEJELENTHETI BÁRMILYEN PROBLÉMÁJÁT A SAPIENTIA EGYETEMMEL KAPCSOLATOSAN.
+                        </div>
+                        <div>
+                            {`FORRÁSKÓD: `}<a target="blank" href={`${sourceCode}`} className="source-code__link">{sourceCode}</a>
+                        </div>
                     </div>
-                    <div>{`Forráskód: `}<a href={`${sourceCode}`} className="source-code__link">{sourceCode}</a></div>
+                    <textarea 
+                        className="text-input" 
+                        value = {reportText}
+                        placeholder="Írja le problémáját, észrevételét" 
+                        onChange={handleTextChange}
+                    />
                 </div>
-                <div className="bottom-submit__container">
-                    {error && <div className="error-message">{error}</div>}
-                    <div className="recaptcha-container">
+                <div className="report-image">
+                    <div className="info">
+                        <div className="info-text">
+                            A BEJELENTÉSHEZ EGY KÉPET IS CSATOLHAT.
+                        </div>
+                    </div>
+                    <ImageDropzone setUploadedImages={setFiles} files={files} />
+                </div>
+            </div>
+            <div className="bottom-submit__container">
+                <div className="submit-container">
                     <ReCAPTCHA 
                         className="recaptcha"
                         ref = {recaptchaRef}
                         sitekey = {process.env.REACT_APP_RECAPTCHA_SITE_KEY}
                         onChange = {onCaptchaChange}
                     />
-                    </div>
-                    <div className="submit-container">
-                        <button className="submit-button" type="submit" onClick={onSubmitWithReCAPTCHA}>Küldés</button>
-                        {isUploading && (<div className="loader"></div>)}
-                    </div>
+                    <button className="submit-button" type="submit" onClick={onSubmitWithReCAPTCHA}>Küldés</button>
+                    {isUploading && (<div className="loader"></div>)}
                 </div>
+                {error && <div className="error-message">{error}</div>}
             </div>
         </div>
     );

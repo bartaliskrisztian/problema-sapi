@@ -1,16 +1,22 @@
 import React, {useMemo, useEffect, useState} from 'react';
 import { useDropzone } from "react-dropzone";
+import Compress from "client-compress";
 import "../assets/css/ImageDropzone.css";
 
 function ImageDropzone(prop) {
 
+    const compress = new Compress(
+        {
+            targetSize: 0.2
+        }
+    );
     // style attributes for dropzone container
     const baseStyle = {
         flex: 1,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        borderWidth: 2,
+        border: 1,
         borderRadius: 10,
         borderColor: "#eeeeee",
         borderStyle: "dashed",
@@ -21,7 +27,8 @@ function ImageDropzone(prop) {
         outline: "none",
         transition: "border .24s ease-in-out",
         width: "100%",
-        height: "100%"
+        height: "100%",
+        padding: "10px"
     };
     
     const activeStyle = {
@@ -51,15 +58,25 @@ function ImageDropzone(prop) {
     } = useDropzone({
         accept: "image/*",
         maxFiles: 1,
-        maxSize: 500000,
+        maxSize: 2000000,
         noClick: true,
         noKeyboard: true,
         // when the user drops an image on the dropzone
         onDrop: (acceptedFiles, fileRejections) => {
             setErrors("");
-            // set the parent component's state with the given image(s)
-            prop.setUploadedImages(acceptedFiles.map(file =>
-                    Object.assign(file, {preview: URL.createObjectURL(file)})));
+    
+            compress.compress(acceptedFiles).then((images) => {
+                    const { photo, info } = images[0];
+                    const file = new File([photo.data], photo.name, 
+                        {
+                          lastModified: new Date(),
+                          type: photo.type,
+                          path: photo.name
+                        }
+                    );
+                    prop.setUploadedImages([Object.assign(file, {preview: URL.createObjectURL(file)})]);
+            });
+
             // on error
             fileRejections.forEach( (file) => {
                 file.errors.forEach((err) => {

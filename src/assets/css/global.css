@@ -1,12 +1,20 @@
 html {
-  height: 95%;
   width: 95%;
+  height: 95%;
 }
 
 body,
 #root,
 .App {
-  height: 100%;
-  width: 100%;
   background: #256e43;
+  margin: 0;
+}
+
+@media screen and (min-width: 601px) {
+  body,
+  #root,
+  .App {
+    height: 100%;
+    width: 100%;
+  }
 }
