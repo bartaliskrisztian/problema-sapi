@@ -8,7 +8,7 @@ function ImageDropzone(prop) {
     // options for reducing file size
     const compress = new Compress(
         {
-            targetSize: 5
+            targetSize: 1
         }
     );
 
