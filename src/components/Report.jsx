@@ -117,7 +117,15 @@ function Report() {
                         <div className="info-text">
                             NÉVTELENÜL BEJELENTHETI BÁRMILYEN PROBLÉMÁJÁT A SAPIENTIA EGYETEMMEL KAPCSOLATOSAN.
                         </div>
-                        <div className="info-text">
+                       
+                    </div>
+                    <textarea 
+                        className="text-input" 
+                        value = {reportText}
+                        placeholder="Írja le problémáját, észrevételét" 
+                        onChange={handleTextChange}
+                    />
+                     <div className="source-code">
                             {`FORRÁSKÓD: `}
                             <a 
                                 target="blank" 
@@ -126,14 +134,7 @@ function Report() {
                             >
                                 github.com/bartalis.krisztian/problema-sapi
                             </a>
-                        </div>
                     </div>
-                    <textarea 
-                        className="text-input" 
-                        value = {reportText}
-                        placeholder="Írja le problémáját, észrevételét" 
-                        onChange={handleTextChange}
-                    />
                 </div>
                 <div className="report-image">
                     <div className="info">

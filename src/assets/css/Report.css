@@ -27,6 +27,12 @@
   padding: 10px;
 }
 
+.source-code {
+  color: #fff;
+  font-size: large;
+  padding: 10px;
+}
+
 .source-code__link {
   color: #c0bebe;
 }
