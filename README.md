@@ -18,6 +18,6 @@ These reports will be forwarded towards the university teachers/management and h
 ### Mobile
 
 <img src="readme_images/mobile1.jpg" alt="mobile" height="500" width="270" />|
-<img src="readme_images/mobile1.jpg" alt="mobile" height="500" width="270"/>
+<img src="readme_images/mobile2.jpg" alt="mobile" height="500" width="270"/>
 
 
