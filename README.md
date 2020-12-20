@@ -9,7 +9,7 @@ These reports will be forwarded towards the university teachers/management and h
 
 * This project is a frontend website written in reactJS.
 * The uploaded reports are stored in Firebase cloud storage.
-* The site is secured with Google reCAPTCHA v2, preventing bot attacks.
+* The site is secured with Google reCAPTCHA v2, to prevent bot attacks.
 
 ### Desktop
 
@@ -17,7 +17,7 @@ These reports will be forwarded towards the university teachers/management and h
 
 ### Mobile
 
-<img src="readme_images/mobile1.jpg" alt="mobile" height="500" width="270" />|
+<img src="readme_images/mobile1.jpg" alt="mobile" height="500" width="270" />
 <img src="readme_images/mobile2.jpg" alt="mobile" height="500" width="270"/>
 
 
